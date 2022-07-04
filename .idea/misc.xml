@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_round_water_drop_24.xml" value="0.224" />
         <entry key="app/src/main/res/font/jeju_font_family.xml" value="0.23385416666666667" />
       </map>
     </option>
