@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
@@ -32,6 +33,26 @@ import kotlin.math.roundToInt
 
 internal const val DEGREE_SIGN = "\u00B0"
 internal const val VISIBLE_ITEM_COUNT = 5
+internal val icons = mapOf(
+    "01d" to R.drawable.ic_01d,
+    "01n" to R.drawable.ic_01n,
+    "02d" to R.drawable.ic_02d,
+    "02n" to R.drawable.ic_02n,
+    "03d" to R.drawable.ic_03d,
+    "03n" to R.drawable.ic_03n,
+    "04d" to R.drawable.ic_04d,
+    "04n" to R.drawable.ic_04n,
+    "09d" to R.drawable.ic_09d,
+    "09n" to R.drawable.ic_09n,
+    "10d" to R.drawable.ic_10d,
+    "10n" to R.drawable.ic_10n,
+    "11d" to R.drawable.ic_11d,
+    "11n" to R.drawable.ic_11n,
+    "13d" to R.drawable.ic_13d,
+    "13n" to R.drawable.ic_13n,
+    "50d" to R.drawable.ic_50d,
+    "50n" to R.drawable.ic_50n,
+)
 
 @Composable
 fun Forecast(
@@ -55,7 +76,7 @@ fun Forecast(
             isAntiAlias = true
             textAlign = Paint.Align.CENTER
             textSize = localDensity.run { 12.dp.toPx() }
-            typeface = ResourcesCompat.getFont(context, R.font.noto_serif_korean_medium)
+            typeface = ResourcesCompat.getFont(context, R.font.noto_serif_korean_regular)
         }
     }
 
@@ -75,14 +96,14 @@ fun Forecast(
             isAntiAlias = true
             textAlign = Paint.Align.CENTER
             textSize = localDensity.run { 12.dp.toPx() }
-            typeface = ResourcesCompat.getFont(context, R.font.noto_serif_korean_medium)
+            typeface = ResourcesCompat.getFont(context, R.font.noto_serif_korean_regular)
         }
     }
 
     Box(modifier = modifier.onSizeChanged { size = it }) {
         Row(
             Modifier
-                .height(160.dp)
+                .height(192.dp)
                 .background(Color.White)
                 .horizontalScroll(rememberScrollState())
         ) {
@@ -111,11 +132,24 @@ fun Forecast(
 
                         drawContext.canvas.nativeCanvas.drawText(dtText, pointF.x, pointF.y, dtPaint)
 
-                        pointF.y += 24.dp.toPx()
+                        pointF.y += 8.dp.toPx()
+
+                        icons[item.weather?.icon]?.let {
+                            val image = ImageBitmap.imageResource(context.resources, id = it)
+
+                            drawImage(
+                                image = image,
+                                topLeft = Offset(pointF.x - image.width.half, pointF.y)
+                            )
+
+                            pointF.y += image.height
+                        }
+
+                        pointF.y += 16.dp.toPx()
 
                         drawContext.canvas.nativeCanvas.drawText(tempText, pointF.x, pointF.y, tempPaint)
 
-                        pointF.y += 24.dp.toPx()
+                        pointF.y += 40.dp.toPx()
                         pointF.y += 1.0F.minus(item.temp.div(maxTemp)) * 48.dp.toPx()
 
                         pointFs.add(index, PointF(pointF.x, pointF.y))
@@ -127,7 +161,7 @@ fun Forecast(
                         )
 
                         pointF.y -= 1.0F.minus(item.temp.div(maxTemp)) * 48.dp.toPx()
-                        pointF.y += 24.dp.toPx()
+                        pointF.y += 40.dp.toPx()
 
                         waterDrop?.asImageBitmap()?.let {
                             val x = pointF.x.minus(it.width.half)
