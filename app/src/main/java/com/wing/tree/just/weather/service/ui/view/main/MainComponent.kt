@@ -26,7 +26,6 @@ import com.wing.tree.just.weather.service.R
 import com.wing.tree.just.weather.service.core.float
 import com.wing.tree.just.weather.service.core.half
 import com.wing.tree.just.weather.service.domain.model.local.openweather.Forecast
-import com.wing.tree.just.weather.service.ui.theme.Typography
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -56,7 +55,7 @@ fun Forecast(
             isAntiAlias = true
             textAlign = Paint.Align.CENTER
             textSize = localDensity.run { 12.dp.toPx() }
-            typeface = ResourcesCompat.getFont(context, R.font.jeju_font_family)
+            typeface = ResourcesCompat.getFont(context, R.font.noto_serif_korean_medium)
         }
     }
 
@@ -66,7 +65,7 @@ fun Forecast(
             isAntiAlias = true
             textAlign = Paint.Align.CENTER
             textSize = localDensity.run { 14.dp.toPx() }
-            typeface = ResourcesCompat.getFont(context, R.font.jeju_font_family)
+            typeface = ResourcesCompat.getFont(context, R.font.noto_serif_korean_medium)
         }
     }
 
@@ -76,7 +75,7 @@ fun Forecast(
             isAntiAlias = true
             textAlign = Paint.Align.CENTER
             textSize = localDensity.run { 12.dp.toPx() }
-            typeface = ResourcesCompat.getFont(context, R.font.jeju_font_family)
+            typeface = ResourcesCompat.getFont(context, R.font.noto_serif_korean_medium)
         }
     }
 
@@ -92,9 +91,7 @@ fun Forecast(
             val width = with(localDensity) { spacing.toDp() } * list.size.dec()
 
             Box(
-                modifier = modifier
-                    .padding(24.dp, 16.dp, 24.dp, 16.dp)
-                    .width(width),
+                modifier = modifier.width(width),
                 contentAlignment = Alignment.Center
             ) {
                 Canvas(modifier = Modifier.fillMaxWidth()) {
