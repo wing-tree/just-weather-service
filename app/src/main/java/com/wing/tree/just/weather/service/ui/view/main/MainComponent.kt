@@ -108,7 +108,7 @@ fun Forecast(
                 .horizontalScroll(rememberScrollState())
         ) {
             val spacing = size.width / visibleItemCount.float
-            val waterDrop = AppCompatResources.getDrawable(context, R.drawable.ic_round_water_drop_24)?.toBitmap()
+            val waterDrop = AppCompatResources.getDrawable(context, R.drawable.ic_round_water_drop_16)?.toBitmap()
             val width = with(localDensity) { spacing.toDp() } * list.size.dec()
 
             Box(
@@ -123,7 +123,7 @@ fun Forecast(
                     list.forEachIndexed { index, item ->
                         val dtText = simpleDateFormat.format(item.dtInMilliseconds)
                         val tempText = "${item.temp.roundToInt()}${DEGREE_SIGN}"
-                        val humidityText = "${item.humidity}"
+                        val humidityText = "${item.humidity}%"
 
                         val pointF = PointF(
                             size.width / visibleItemCount.float * index.float,
