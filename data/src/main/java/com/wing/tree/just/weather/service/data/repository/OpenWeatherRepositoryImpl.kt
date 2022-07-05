@@ -1,7 +1,7 @@
 package com.wing.tree.just.weather.service.data.repository
 
 import com.wing.tree.just.weather.service.data.datasource.remote.OpenWeatherDataSource
-import com.wing.tree.just.weather.service.data.model.Forecast
+import com.wing.tree.just.weather.service.domain.model.local.openweather.Forecast
 import com.wing.tree.just.weather.service.domain.model.remote.request.OpenWeatherRequest
 import com.wing.tree.just.weather.service.domain.model.remote.response.OpenWeatherResponse
 import com.wing.tree.just.weather.service.domain.repository.OpenWeatherRepository

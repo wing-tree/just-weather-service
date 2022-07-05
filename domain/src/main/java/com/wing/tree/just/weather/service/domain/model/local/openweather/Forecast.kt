@@ -29,5 +29,29 @@ abstract class Forecast {
         fun dateEquals(calendar: Calendar) = calendar.year == year &&
                 calendar.month == month &&
                 calendar.date == date
+
+        companion object {
+            fun from(item: OpenWeatherResponse.Forecast.Item): Item {
+                val main = item.main
+                val weather = item.weather.firstOrNull()
+
+                return object : Item() {
+                    override val dt: Long = item.dt
+                    override val temp: Float = main.temp
+                    override val feels_like: Float = main.feels_like
+                    override val temp_min: Float = main.temp_min
+                    override val temp_max: Float = main.temp_max
+                    override val pressure: Int = main.pressure
+                    override val humidity: Int = main.humidity
+                    override val weather: OpenWeatherResponse.Forecast.Item.Weather? = weather
+                }
+            }
+        }
+    }
+
+    companion object {
+        fun from(forecast: OpenWeatherResponse.Forecast) = object : Forecast() {
+            override val list: List<Item> = forecast.list.map { Item.from(it) }
+        }
     }
 }
