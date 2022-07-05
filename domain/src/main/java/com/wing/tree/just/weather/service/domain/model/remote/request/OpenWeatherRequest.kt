@@ -4,8 +4,10 @@ import com.wing.tree.just.weather.service.domain.constant.Key
 
 sealed class OpenWeatherRequest {
     enum class Units(val value: String) {
+        @Suppress("unused")
         Standard("standard"),
         Metric("metric"),
+        @Suppress("unused")
         Imperial("imperial")
     }
 
