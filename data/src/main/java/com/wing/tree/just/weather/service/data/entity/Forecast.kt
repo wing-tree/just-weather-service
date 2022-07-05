@@ -8,7 +8,7 @@ import com.wing.tree.just.weather.service.domain.model.remote.response.OpenWeath
 @Entity(tableName = "forecast")
 data class Forecast(
     @PrimaryKey(autoGenerate = false)
-    val dt: Long,
+    val lastUpdatedAt: Long,
     override val list: List<Item>
 ) : Forecast() {
     data class Item(
