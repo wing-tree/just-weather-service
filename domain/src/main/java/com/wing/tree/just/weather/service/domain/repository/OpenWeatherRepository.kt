@@ -7,4 +7,5 @@ import com.wing.tree.just.weather.service.domain.model.remote.response.OpenWeath
 interface OpenWeatherRepository {
     suspend fun forecast(forecast: OpenWeatherRequest.Forecast): Forecast
     suspend fun weather(weather: OpenWeatherRequest.Weather): OpenWeatherResponse.Weather
+    fun clear()
 }

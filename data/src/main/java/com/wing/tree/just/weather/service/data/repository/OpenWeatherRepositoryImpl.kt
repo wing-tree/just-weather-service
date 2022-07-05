@@ -1,18 +1,51 @@
 package com.wing.tree.just.weather.service.data.repository
 
-import com.wing.tree.just.weather.service.data.datasource.remote.OpenWeatherDataSource
+import com.wing.tree.just.weather.service.data.mapper.toEntity
+import com.wing.tree.just.weather.service.data.datasource.local.OpenWeatherDataSource as LocalOpenWeatherDataSource
+import com.wing.tree.just.weather.service.data.datasource.remote.OpenWeatherDataSource as RemoteOpenWeatherDataSource
 import com.wing.tree.just.weather.service.domain.model.local.openweather.Forecast
 import com.wing.tree.just.weather.service.domain.model.remote.request.OpenWeatherRequest
 import com.wing.tree.just.weather.service.domain.model.remote.response.OpenWeatherResponse
 import com.wing.tree.just.weather.service.domain.repository.OpenWeatherRepository
+import kotlinx.coroutines.*
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class OpenWeatherRepositoryImpl @Inject constructor(private val dataSource: OpenWeatherDataSource) : OpenWeatherRepository {
+class OpenWeatherRepositoryImpl @Inject constructor(
+    private val localDataSource: LocalOpenWeatherDataSource,
+    private val remoteDataSource: RemoteOpenWeatherDataSource
+) : OpenWeatherRepository {
+    private val job = Job()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + job)
+    private val primaryKey: Long
+        get() = Calendar.getInstance().timeInMillis
+
     override suspend fun forecast(forecast: OpenWeatherRequest.Forecast): Forecast {
-        return Forecast.from(dataSource.forecast(forecast))
+        val dt = localDataSource.dt() ?: Long.MAX_VALUE
+
+        return if (isThreeHoursAgo(dt)) {
+            Forecast.from(remoteDataSource.forecast(forecast)).also {
+                coroutineScope.launch { localDataSource.clearAndInsert(it.toEntity(primaryKey)) }
+            }
+        } else {
+            localDataSource.forecast() ?: Forecast.from(remoteDataSource.forecast(forecast)).also {
+                coroutineScope.launch { localDataSource.clearAndInsert(it.toEntity(primaryKey)) }
+            }
+        }
     }
 
     override suspend fun weather(weather: OpenWeatherRequest.Weather): OpenWeatherResponse.Weather {
-        return dataSource.weather(weather)
+        return remoteDataSource.weather(weather)
+    }
+
+    override fun clear() {
+        job.cancel()
+    }
+
+    private fun isThreeHoursAgo(dt: Long): Boolean {
+        return with(Calendar.getInstance().timeInMillis.minus(dt)) {
+            TimeUnit.MILLISECONDS.toHours(this) > 2L
+        }
     }
 }
