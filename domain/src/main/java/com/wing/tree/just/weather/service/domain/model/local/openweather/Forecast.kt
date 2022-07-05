@@ -22,9 +22,9 @@ abstract class Forecast {
         val dtInMilliseconds: Long
             get() = dt.times(1000L)
 
-        val year: Int get() = Calendar.getInstance().apply{ timeInMillis = dtInMilliseconds }.year
-        val month: Int get() = Calendar.getInstance().apply{ timeInMillis = dtInMilliseconds }.month
-        val date: Int get() = Calendar.getInstance().apply{ timeInMillis = dtInMilliseconds }.date
+        private val year: Int get() = Calendar.getInstance().apply{ timeInMillis = dtInMilliseconds }.year
+        private val month: Int get() = Calendar.getInstance().apply{ timeInMillis = dtInMilliseconds }.month
+        private val date: Int get() = Calendar.getInstance().apply{ timeInMillis = dtInMilliseconds }.date
 
         fun dateEquals(calendar: Calendar) = calendar.year == year &&
                 calendar.month == month &&
