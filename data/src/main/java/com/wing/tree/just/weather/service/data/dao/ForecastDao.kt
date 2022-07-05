@@ -14,5 +14,5 @@ interface ForecastDao {
     suspend fun clear()
 
     @Query("SELECT * FROM forecast LIMIT 1")
-    suspend fun get(): Forecast
+    suspend fun get(): Forecast?
 }

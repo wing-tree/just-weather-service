@@ -15,7 +15,7 @@ class OpenWeatherDataSourceImpl @Inject constructor(database: Database) : OpenWe
         forecastDao.insert(forecast)
     }
 
-    override suspend fun forecast(): Forecast {
+    override suspend fun forecast(): Forecast? {
         return forecastDao.get()
     }
 }
