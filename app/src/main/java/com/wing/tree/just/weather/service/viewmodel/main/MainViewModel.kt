@@ -13,9 +13,9 @@ import com.wing.tree.just.weather.service.domain.repository.LocationRepository
 import com.wing.tree.just.weather.service.domain.usecase.core.Result
 import com.wing.tree.just.weather.service.domain.usecase.openweather.GetForecastUseCase
 import com.wing.tree.just.weather.service.domain.usecase.openweather.GetWeatherUseCase
-import com.wing.tree.just.weather.service.ui.view.main.ForecastUiState
-import com.wing.tree.just.weather.service.ui.view.main.MainUiState
-import com.wing.tree.just.weather.service.ui.view.main.WeatherUiState
+import com.wing.tree.just.weather.service.ui.view.main.ForecastState
+import com.wing.tree.just.weather.service.ui.view.main.MainState
+import com.wing.tree.just.weather.service.ui.view.main.WeatherState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -43,32 +43,32 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    val uiState: StateFlow<MainUiState> = combine(
+    val uiState: StateFlow<MainState> = combine(
         forecast,
         weather
     ) { forecast, weather ->
-        val forecastUiState: ForecastUiState = when (forecast) {
-            is Result.Loading -> ForecastUiState.Loading
-            is Result.Success -> ForecastUiState.Content(forecast.data)
-            is Result.Failure -> ForecastUiState.Error
+        val forecastState: ForecastState = when (forecast) {
+            is Result.Loading -> ForecastState.Loading
+            is Result.Success -> ForecastState.Content(forecast.data)
+            is Result.Failure -> ForecastState.Error
         }
 
-        val weatherUiState: WeatherUiState = when (weather) {
-            is Result.Loading -> WeatherUiState.Loading
-            is Result.Success -> WeatherUiState.Content(weather.data)
-            is Result.Failure -> WeatherUiState.Error
+        val weatherState: WeatherState = when (weather) {
+            is Result.Loading -> WeatherState.Loading
+            is Result.Success -> WeatherState.Content(weather.data)
+            is Result.Failure -> WeatherState.Error
         }
 
-        MainUiState(
-            forecastUiState = forecastUiState,
-            weatherUiState = weatherUiState
+        MainState(
+            forecastState = forecastState,
+            weatherState = weatherState
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = MainUiState(
-            forecastUiState = ForecastUiState.Loading,
-            weatherUiState = WeatherUiState.Loading
+        initialValue = MainState(
+            forecastState = ForecastState.Loading,
+            weatherState = WeatherState.Loading
         )
     )
 

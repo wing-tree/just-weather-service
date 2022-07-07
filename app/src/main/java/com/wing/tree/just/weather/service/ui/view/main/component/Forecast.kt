@@ -31,7 +31,7 @@ import com.wing.tree.just.weather.service.constant.tomorrow
 import com.wing.tree.just.weather.service.domain.model.local.openweather.Forecast
 import com.wing.tree.just.weather.service.extension.float
 import com.wing.tree.just.weather.service.extension.half
-import com.wing.tree.just.weather.service.ui.view.main.ForecastUiState
+import com.wing.tree.just.weather.service.ui.view.main.ForecastState
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -41,11 +41,11 @@ private const val VISIBLE_ITEM_COUNT = 5
 @Composable
 fun Forecast(
     modifier: Modifier,
-    uiState: ForecastUiState
+    uiState: ForecastState
 ) {
     when(uiState) {
-        is ForecastUiState.Loading -> Unit
-        is ForecastUiState.Content -> {
+        is ForecastState.Loading -> Unit
+        is ForecastState.Content -> {
             uiState.forecast?.let { forecast ->
                 ForecastContent(
                     modifier = modifier,
@@ -53,7 +53,7 @@ fun Forecast(
                 )
             }
         }
-        is ForecastUiState.Error -> Unit
+        is ForecastState.Error -> Unit
     }
 }
 

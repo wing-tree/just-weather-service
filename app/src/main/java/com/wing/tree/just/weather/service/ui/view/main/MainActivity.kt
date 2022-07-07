@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Forecast(
                         modifier = Modifier.fillMaxWidth(),
-                        uiState = uiState.forecastUiState
+                        uiState = uiState.forecastState
                     )
                 }
             }
