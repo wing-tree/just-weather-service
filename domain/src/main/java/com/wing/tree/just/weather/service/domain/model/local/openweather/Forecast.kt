@@ -4,6 +4,7 @@ import com.wing.tree.just.weather.service.domain.extension.date
 import com.wing.tree.just.weather.service.domain.extension.month
 import com.wing.tree.just.weather.service.domain.extension.year
 import com.wing.tree.just.weather.service.domain.model.remote.response.OpenWeatherResponse
+import java.time.LocalDate
 import java.util.*
 
 abstract class Forecast {
@@ -22,13 +23,16 @@ abstract class Forecast {
         val dtInMilliseconds: Long
             get() = dt.times(1000L)
 
-        private val year: Int get() = Calendar.getInstance().apply{ timeInMillis = dtInMilliseconds }.year
-        private val month: Int get() = Calendar.getInstance().apply{ timeInMillis = dtInMilliseconds }.month
-        private val date: Int get() = Calendar.getInstance().apply{ timeInMillis = dtInMilliseconds }.date
+        private val calendar: Calendar
+            get() = Calendar.getInstance(Locale.getDefault())
+                .apply {
+                    timeInMillis = dtInMilliseconds
+                }
 
-        fun dateEquals(calendar: Calendar) = calendar.year == year &&
-                calendar.month == month &&
-                calendar.date == date
+        fun calendarEquals(calendar: Calendar) =
+            calendar.year == this.calendar.year &&
+                calendar.month == this.calendar.month &&
+                calendar.date == this.calendar.date
 
         companion object {
             fun from(item: OpenWeatherResponse.Forecast.Item): Item {
