@@ -1,4 +1,4 @@
-package com.wing.tree.just.weather.service.domain.core
+package com.wing.tree.just.weather.service.domain.extension
 
 import java.util.*
 
