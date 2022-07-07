@@ -15,12 +15,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import com.wing.tree.just.weather.service.core.checkPermission
-import com.wing.tree.just.weather.service.core.shouldShowRequestPermissionRationale
+import com.wing.tree.just.weather.service.extension.checkPermission
+import com.wing.tree.just.weather.service.extension.shouldShowRequestPermissionRationale
 import com.wing.tree.just.weather.service.ui.theme.JustWeatherServiceTheme
-import com.wing.tree.just.weather.service.viewmodel.MainViewModel
+import com.wing.tree.just.weather.service.viewmodel.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
