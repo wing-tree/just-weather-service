@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import com.wing.tree.just.weather.service.extension.checkPermission
 import com.wing.tree.just.weather.service.extension.shouldShowRequestPermissionRationale
 import com.wing.tree.just.weather.service.ui.theme.JustWeatherServiceTheme
+import com.wing.tree.just.weather.service.ui.view.main.component.Forecast
 import com.wing.tree.just.weather.service.viewmodel.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
