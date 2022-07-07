@@ -1,4 +1,4 @@
-package com.wing.tree.just.weather.service.ui.view.main
+package com.wing.tree.just.weather.service.ui.view.main.component
 
 import android.graphics.Paint
 import android.graphics.PointF
@@ -24,35 +24,16 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.wing.tree.just.weather.service.R
-import com.wing.tree.just.weather.service.core.float
-import com.wing.tree.just.weather.service.core.half
+import com.wing.tree.just.weather.service.constant.DEGREE_SIGN
+import com.wing.tree.just.weather.service.constant.icons
+import com.wing.tree.just.weather.service.extension.float
+import com.wing.tree.just.weather.service.extension.half
 import com.wing.tree.just.weather.service.domain.model.local.openweather.Forecast
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-internal const val DEGREE_SIGN = "\u00B0"
-internal const val VISIBLE_ITEM_COUNT = 5
-internal val icons = mapOf(
-    "01d" to R.drawable.ic_01d,
-    "01n" to R.drawable.ic_01n,
-    "02d" to R.drawable.ic_02d,
-    "02n" to R.drawable.ic_02n,
-    "03d" to R.drawable.ic_03d,
-    "03n" to R.drawable.ic_03n,
-    "04d" to R.drawable.ic_04d,
-    "04n" to R.drawable.ic_04n,
-    "09d" to R.drawable.ic_09d,
-    "09n" to R.drawable.ic_09n,
-    "10d" to R.drawable.ic_10d,
-    "10n" to R.drawable.ic_10n,
-    "11d" to R.drawable.ic_11d,
-    "11n" to R.drawable.ic_11n,
-    "13d" to R.drawable.ic_13d,
-    "13n" to R.drawable.ic_13n,
-    "50d" to R.drawable.ic_50d,
-    "50n" to R.drawable.ic_50n,
-)
+private const val VISIBLE_ITEM_COUNT = 5
 
 @Composable
 fun Forecast(

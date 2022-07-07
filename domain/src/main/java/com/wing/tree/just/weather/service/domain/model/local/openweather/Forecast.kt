@@ -1,8 +1,8 @@
 package com.wing.tree.just.weather.service.domain.model.local.openweather
 
-import com.wing.tree.just.weather.service.domain.core.date
-import com.wing.tree.just.weather.service.domain.core.month
-import com.wing.tree.just.weather.service.domain.core.year
+import com.wing.tree.just.weather.service.domain.extension.date
+import com.wing.tree.just.weather.service.domain.extension.month
+import com.wing.tree.just.weather.service.domain.extension.year
 import com.wing.tree.just.weather.service.domain.model.remote.response.OpenWeatherResponse
 import java.util.*
 
