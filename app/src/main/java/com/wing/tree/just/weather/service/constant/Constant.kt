@@ -1,6 +1,7 @@
 package com.wing.tree.just.weather.service.constant
 
 import com.wing.tree.just.weather.service.R
+import java.util.*
 
 internal const val ONE = 1
 internal const val TWO = 2
@@ -27,3 +28,6 @@ internal val icons = mapOf(
     "50d" to R.drawable.ic_50d,
     "50n" to R.drawable.ic_50n,
 )
+
+internal val today: Calendar get() = Calendar.getInstance()
+internal val tomorrow: Calendar get() = today.apply { add(Calendar.DATE, ONE) }
