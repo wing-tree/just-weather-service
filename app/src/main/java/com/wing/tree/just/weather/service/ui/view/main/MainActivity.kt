@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import com.wing.tree.just.weather.service.extension.checkPermission
 import com.wing.tree.just.weather.service.extension.shouldShowRequestPermissionRationale
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("MissingPermission")
     private val requestMultiplePermissionsLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { map ->
         if (map.all { it.value }) {
-            viewModel.forecast()
+            viewModel.load()
         }
     }
 
@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
 
         when {
             checkPermission(ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION) -> {
-                viewModel.forecast()
+                viewModel.load()
             }
             shouldShowRequestPermissionRationale(ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION) -> {
             }
@@ -48,23 +48,17 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val forecast by viewModel.forecast.observeAsState()
+            val uiState by viewModel.uiState.collectAsState()
 
             JustWeatherServiceTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    forecast?.let { forecast ->
-                        val today = viewModel.today
-                        val tomorrow = viewModel.tomorrow
-
-                        val list = forecast.list.filter {
-                            it.dateEquals(today) || it.dateEquals(tomorrow)
-                        }
-
-                        Forecast(modifier = Modifier.fillMaxWidth(), list = list)
-                    }
+                    Forecast(
+                        modifier = Modifier.fillMaxWidth(),
+                        uiState = uiState.forecastUiState
+                    )
                 }
             }
         }

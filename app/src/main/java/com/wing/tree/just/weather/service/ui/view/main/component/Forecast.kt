@@ -26,9 +26,12 @@ import androidx.core.graphics.drawable.toBitmap
 import com.wing.tree.just.weather.service.R
 import com.wing.tree.just.weather.service.constant.DEGREE_SIGN
 import com.wing.tree.just.weather.service.constant.icons
+import com.wing.tree.just.weather.service.constant.today
+import com.wing.tree.just.weather.service.constant.tomorrow
+import com.wing.tree.just.weather.service.domain.model.local.openweather.Forecast
 import com.wing.tree.just.weather.service.extension.float
 import com.wing.tree.just.weather.service.extension.half
-import com.wing.tree.just.weather.service.domain.model.local.openweather.Forecast
+import com.wing.tree.just.weather.service.ui.view.main.ForecastUiState
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -38,13 +41,28 @@ private const val VISIBLE_ITEM_COUNT = 5
 @Composable
 fun Forecast(
     modifier: Modifier,
-    list: List<Forecast.Item>,
+    uiState: ForecastUiState
+) {
+    when(uiState) {
+        is ForecastUiState.Loading -> Unit
+        is ForecastUiState.Content -> {
+            uiState.forecast?.let { forecast ->
+                ForecastContent(
+                    modifier = modifier,
+                    forecast = forecast
+                )
+            }
+        }
+        is ForecastUiState.Error -> Unit
+    }
+}
+
+@Composable
+fun ForecastContent(
+    modifier: Modifier,
+    forecast: Forecast,
     visibleItemCount: Int = VISIBLE_ITEM_COUNT
 ) {
-    if (list.isEmpty()) {
-        return
-    }
-
     val context = LocalContext.current
     val localDensity = LocalDensity.current
     val simpleDateFormat = SimpleDateFormat("a h", Locale.getDefault())
@@ -88,6 +106,10 @@ fun Forecast(
                 .background(Color.White)
                 .horizontalScroll(rememberScrollState())
         ) {
+            val list = forecast.list.filter {
+                it.dateEquals(today) || it.dateEquals(tomorrow)
+            }
+
             val spacing = size.width / visibleItemCount.float
             val waterDrop = AppCompatResources.getDrawable(context, R.drawable.ic_round_water_drop_16)?.toBitmap()
             val width = with(localDensity) { spacing.toDp() } * list.size.dec()
@@ -97,7 +119,7 @@ fun Forecast(
                 contentAlignment = Alignment.Center
             ) {
                 Canvas(modifier = Modifier.fillMaxWidth()) {
-                    val maxTemp = list.maxOf { it.temp }
+                    val maxTemp = list.maxOfOrNull { it.temp } ?: 1.0F
 
                     val pointFs = mutableListOf<PointF>()
 
