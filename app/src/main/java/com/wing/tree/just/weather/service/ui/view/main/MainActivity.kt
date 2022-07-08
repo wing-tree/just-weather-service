@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +20,7 @@ import com.wing.tree.just.weather.service.extension.checkPermission
 import com.wing.tree.just.weather.service.extension.shouldShowRequestPermissionRationale
 import com.wing.tree.just.weather.service.ui.theme.JustWeatherServiceTheme
 import com.wing.tree.just.weather.service.ui.view.main.component.Forecast
+import com.wing.tree.just.weather.service.ui.view.main.component.Weather
 import com.wing.tree.just.weather.service.viewmodel.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -55,10 +57,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Forecast(
-                        modifier = Modifier.fillMaxWidth(),
-                        uiState = uiState.forecastState
-                    )
+                    Column {
+                        Weather(
+                            modifier = Modifier.fillMaxWidth(),
+                            address = uiState.address,
+                            uiState = uiState.weatherState
+                        )
+
+                        Forecast(
+                            modifier = Modifier.fillMaxWidth(),
+                            uiState = uiState.forecastState
+                        )
+                    }
                 }
             }
         }
