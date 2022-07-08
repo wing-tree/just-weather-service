@@ -3,11 +3,8 @@ package com.wing.tree.just.weather.service.ui.view.main.component
 import android.graphics.Paint
 import android.graphics.PointF
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,8 +23,6 @@ import androidx.core.graphics.drawable.toBitmap
 import com.wing.tree.just.weather.service.R
 import com.wing.tree.just.weather.service.constant.DEGREE_SIGN
 import com.wing.tree.just.weather.service.constant.icons
-import com.wing.tree.just.weather.service.constant.today
-import com.wing.tree.just.weather.service.constant.tomorrow
 import com.wing.tree.just.weather.service.domain.model.local.openweather.Forecast
 import com.wing.tree.just.weather.service.extension.float
 import com.wing.tree.just.weather.service.extension.half
@@ -47,10 +42,18 @@ fun Forecast(
         is ForecastState.Loading -> Unit
         is ForecastState.Content -> {
             uiState.forecast?.let { forecast ->
-                ForecastContent(
-                    modifier = modifier,
-                    forecast = forecast
-                )
+                val group = forecast.list.groupBy { it.dayOfWeek }
+
+                Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+                    group.values.forEachIndexed { index, list ->
+                        Spacer(modifier = modifier.height(8.dp))
+
+                        ForecastContent(
+                            modifier = Modifier.fillMaxWidth(),
+                            list = list
+                        )
+                    }
+                }
             }
         }
         is ForecastState.Error -> Unit
@@ -58,9 +61,9 @@ fun Forecast(
 }
 
 @Composable
-fun ForecastContent(
+private fun ForecastContent(
     modifier: Modifier,
-    forecast: Forecast,
+    list: List<Forecast.Item>,
     visibleItemCount: Int = VISIBLE_ITEM_COUNT
 ) {
     val context = LocalContext.current
@@ -106,10 +109,6 @@ fun ForecastContent(
                 .background(Color.White)
                 .horizontalScroll(rememberScrollState())
         ) {
-            val list = forecast.list.filter {
-                it.dateEquals(today) || it.dateEquals(tomorrow)
-            }
-
             val spacing = size.width / visibleItemCount.float
             val waterDrop = AppCompatResources.getDrawable(context, R.drawable.ic_round_water_drop_16)?.toBitmap()
             val width = with(localDensity) { spacing.toDp() } * list.size.dec()
@@ -180,13 +179,7 @@ fun ForecastContent(
                             val percentage = 1.0F - item.humidity.div(100.0F)
                             val bottom = pointF.y + percentage.times(it.height)
 
-                            clipRect(
-                                x,
-                                y,
-                                right,
-                                bottom,
-                                ClipOp.Intersect
-                            ) {
+                            clipRect(x, y, right, bottom, ClipOp.Intersect) {
                                 drawImage(
                                     image = it,
                                     topLeft = Offset(x, pointF.y),
