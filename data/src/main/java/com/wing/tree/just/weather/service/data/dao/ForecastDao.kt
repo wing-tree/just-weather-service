@@ -1,14 +1,11 @@
 package com.wing.tree.just.weather.service.data.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import com.wing.tree.just.weather.service.data.entity.Forecast
 
 @Dao
 interface ForecastDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(forecast: Forecast)
 
     @Query("DELETE FROM forecast")
