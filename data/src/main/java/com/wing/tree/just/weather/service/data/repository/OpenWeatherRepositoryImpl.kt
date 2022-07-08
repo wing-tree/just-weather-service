@@ -1,5 +1,6 @@
 package com.wing.tree.just.weather.service.data.repository
 
+import com.wing.tree.just.weather.service.data.entity.Type
 import com.wing.tree.just.weather.service.data.mapper.toEntity
 import com.wing.tree.just.weather.service.domain.model.local.openweather.Forecast
 import com.wing.tree.just.weather.service.domain.model.local.openweather.Weather
@@ -24,7 +25,7 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     private val timeout = 5L.seconds
 
     override suspend fun forecast(forecast: OpenWeatherRequest.Forecast): Forecast {
-        val dt = localDataSource.dt() ?: Long.MAX_VALUE
+        val dt = localDataSource.dt(Type.Forecast) ?: Long.MAX_VALUE
 
         return withTimeout(timeout) {
             if (isMoreThanThreeHoursAgo(dt)) {
@@ -40,8 +41,18 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     }
 
     override suspend fun weather(weather: OpenWeatherRequest.Weather): Weather {
+        val dt = localDataSource.dt(Type.Weather) ?: Long.MAX_VALUE
+
         return withTimeout(timeout) {
-            Weather.from(remoteDataSource.weather(weather))
+            if (isMoreThanOneHoursAgo(dt)) {
+                Weather.from(remoteDataSource.weather(weather)).also {
+                    coroutineScope.launch { localDataSource.clearAndInsert(it.toEntity(primaryKey)) }
+                }
+            } else {
+                localDataSource.weather() ?: Weather.from(remoteDataSource.weather(weather)).also {
+                    coroutineScope.launch { localDataSource.clearAndInsert(it.toEntity(primaryKey)) }
+                }
+            }
         }
     }
 
