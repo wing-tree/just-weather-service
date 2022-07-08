@@ -31,22 +31,39 @@ class MainViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
     private val latLng = MutableStateFlow<LatLng?>(null)
 
-    private val forecast = channelFlow {
+    private val address = channelFlow {
+        send(null)
+
         latLng.collectLatest { latLng ->
-            latLng?.let { send(getForecastUseCase(it)) }
+            latLng?.let { send(address(it)) }
+        }
+    }
+
+    private val forecast = channelFlow {
+        send(Result.Loading)
+
+        latLng.collectLatest { latLng ->
+            latLng?.let {
+                send(getForecastUseCase(it))
+            }
         }
     }
 
     private val weather = channelFlow {
+        send(Result.Loading)
+
         latLng.collectLatest { latLng ->
-            latLng?.let { send(getWeatherUseCase(it)) }
+            latLng?.let {
+                send(getWeatherUseCase(it))
+            }
         }
     }
 
     val uiState: StateFlow<MainState> = combine(
+        address,
         forecast,
         weather
-    ) { forecast, weather ->
+    ) { address, forecast, weather ->
         val forecastState: ForecastState = when (forecast) {
             is Result.Loading -> ForecastState.Loading
             is Result.Success -> ForecastState.Content(forecast.data)
@@ -60,6 +77,7 @@ class MainViewModel @Inject constructor(
         }
 
         MainState(
+            address = address,
             forecastState = forecastState,
             weatherState = weatherState
         )
@@ -67,6 +85,7 @@ class MainViewModel @Inject constructor(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = MainState(
+            address = null,
             forecastState = ForecastState.Loading,
             weatherState = WeatherState.Loading
         )
