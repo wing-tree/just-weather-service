@@ -4,7 +4,6 @@ import com.wing.tree.just.weather.service.domain.extension.date
 import com.wing.tree.just.weather.service.domain.extension.month
 import com.wing.tree.just.weather.service.domain.extension.year
 import com.wing.tree.just.weather.service.domain.model.remote.response.OpenWeatherResponse
-import java.time.LocalDate
 import java.util.*
 
 abstract class Forecast {
@@ -29,6 +28,9 @@ abstract class Forecast {
                     timeInMillis = dtInMilliseconds
                 }
 
+        val dayOfWeek: Int get() = calendar.get(Calendar.DAY_OF_WEEK)
+
+        @Suppress("unused")
         fun calendarEquals(calendar: Calendar) =
             calendar.year == this.calendar.year &&
                 calendar.month == this.calendar.month &&
