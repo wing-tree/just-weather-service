@@ -1,10 +1,12 @@
 package com.wing.tree.just.weather.service.ui.view.main
 
+import android.location.Address
 import androidx.compose.runtime.Immutable
 import com.wing.tree.just.weather.service.domain.model.local.openweather.Forecast
 import com.wing.tree.just.weather.service.domain.model.local.openweather.Weather
 
 data class MainState(
+    val address: Address?,
     val forecastState: ForecastState,
     val weatherState: WeatherState
 )
