@@ -7,7 +7,6 @@ import android.location.Geocoder
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.wing.tree.just.weather.service.domain.exception.OnCanceledException
 import com.wing.tree.just.weather.service.domain.model.local.location.LatLng
 import com.wing.tree.just.weather.service.domain.repository.LocationRepository
 import com.wing.tree.just.weather.service.domain.usecase.core.Result
@@ -96,7 +95,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 latLng.emit(locationRepository.latLng().firstOrNull())
-            } catch (onCanceledException: OnCanceledException) {
+            } catch (exception: Exception) {
 
             }
         }
