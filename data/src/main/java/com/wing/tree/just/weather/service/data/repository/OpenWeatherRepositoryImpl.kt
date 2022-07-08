@@ -28,8 +28,6 @@ class OpenWeatherRepositoryImpl @Inject constructor(
 
         return withTimeout(timeout) {
             if (isMoreThanThreeHoursAgo(dt)) {
-                coroutineScope.launch { localDataSource.clear() }
-
                 Forecast.from(remoteDataSource.forecast(forecast)).also {
                     coroutineScope.launch { localDataSource.clearAndInsert(it.toEntity(primaryKey)) }
                 }
