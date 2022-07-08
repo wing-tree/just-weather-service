@@ -5,13 +5,11 @@ import com.wing.tree.just.weather.service.domain.model.local.openweather.Forecas
 import com.wing.tree.just.weather.service.domain.model.local.openweather.Weather
 import com.wing.tree.just.weather.service.domain.model.remote.request.OpenWeatherRequest
 import com.wing.tree.just.weather.service.domain.repository.OpenWeatherRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 import com.wing.tree.just.weather.service.data.datasource.local.OpenWeatherDataSource as LocalOpenWeatherDataSource
 import com.wing.tree.just.weather.service.data.datasource.remote.OpenWeatherDataSource as RemoteOpenWeatherDataSource
 
@@ -23,23 +21,30 @@ class OpenWeatherRepositoryImpl @Inject constructor(
     private val coroutineScope = CoroutineScope(Dispatchers.IO + job)
     private val primaryKey: Long
         get() = Calendar.getInstance().timeInMillis
+    private val timeout = 5L.seconds
 
     override suspend fun forecast(forecast: OpenWeatherRequest.Forecast): Forecast {
         val dt = localDataSource.dt() ?: Long.MAX_VALUE
 
-        return if (isMoreThanThreeHoursAgo(dt)) {
-            Forecast.from(remoteDataSource.forecast(forecast)).also {
-                coroutineScope.launch { localDataSource.clearAndInsert(it.toEntity(primaryKey)) }
-            }
-        } else {
-            localDataSource.forecast() ?: Forecast.from(remoteDataSource.forecast(forecast)).also {
-                coroutineScope.launch { localDataSource.clearAndInsert(it.toEntity(primaryKey)) }
+        return withTimeout(timeout) {
+            if (isMoreThanThreeHoursAgo(dt)) {
+                coroutineScope.launch { localDataSource.clear() }
+
+                Forecast.from(remoteDataSource.forecast(forecast)).also {
+                    coroutineScope.launch { localDataSource.clearAndInsert(it.toEntity(primaryKey)) }
+                }
+            } else {
+                localDataSource.forecast() ?: Forecast.from(remoteDataSource.forecast(forecast)).also {
+                    coroutineScope.launch { localDataSource.clearAndInsert(it.toEntity(primaryKey)) }
+                }
             }
         }
     }
 
     override suspend fun weather(weather: OpenWeatherRequest.Weather): Weather {
-        return Weather.from(remoteDataSource.weather(weather))
+        return withTimeout(timeout) {
+            Weather.from(remoteDataSource.weather(weather))
+        }
     }
 
     override fun clear() {
