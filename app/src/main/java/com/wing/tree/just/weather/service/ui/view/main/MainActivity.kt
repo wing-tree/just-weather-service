@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val uiState by viewModel.uiState.collectAsState()
+            val state by viewModel.uiState.collectAsState()
 
             JustWeatherServiceTheme {
                 Surface(
@@ -60,13 +60,13 @@ class MainActivity : ComponentActivity() {
                     Column {
                         Weather(
                             modifier = Modifier.fillMaxWidth(),
-                            address = uiState.address,
-                            uiState = uiState.weatherState
+                            address = state.address,
+                            uiState = state.weatherState
                         )
 
                         Forecast(
                             modifier = Modifier.fillMaxWidth(),
-                            uiState = uiState.forecastState
+                            uiState = state.forecastState
                         )
                     }
                 }
