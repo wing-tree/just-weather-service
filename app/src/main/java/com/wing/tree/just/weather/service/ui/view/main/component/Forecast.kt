@@ -22,6 +22,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.wing.tree.just.weather.service.R
 import com.wing.tree.just.weather.service.constant.DEGREE_SIGN
+import com.wing.tree.just.weather.service.constant.TWO
 import com.wing.tree.just.weather.service.constant.icons
 import com.wing.tree.just.weather.service.domain.model.local.openweather.Forecast
 import com.wing.tree.just.weather.service.extension.float
@@ -48,10 +49,12 @@ fun Forecast(
                     group.values.forEachIndexed { index, list ->
                         Spacer(modifier = modifier.height(8.dp))
 
-                        ForecastContent(
-                            modifier = Modifier.fillMaxWidth(),
-                            list = list
-                        )
+                        if (list.isNotEmpty()) {
+                            ForecastContent(
+                                modifier = Modifier.fillMaxWidth(),
+                                list = list
+                            )
+                        }
                     }
                 }
             }
@@ -109,15 +112,22 @@ private fun ForecastContent(
                 .background(Color.White)
                 .horizontalScroll(rememberScrollState())
         ) {
-            val spacing = size.width / visibleItemCount.float
+            val spacing = size.width.div(visibleItemCount.float)
             val waterDrop = AppCompatResources.getDrawable(context, R.drawable.ic_round_water_drop_16)?.toBitmap()
             val width = with(localDensity) { spacing.toDp() } * list.size.dec()
+            val horizontal = with(localDensity) { spacing.half.toDp() }
 
             Box(
-                modifier = modifier.width(width),
+                modifier = modifier.width(width.plus(horizontal.times(TWO))),
                 contentAlignment = Alignment.Center
             ) {
-                Canvas(modifier = Modifier.fillMaxWidth()) {
+
+
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal, 0.dp)
+                ) {
                     val maxTemp = list.maxOfOrNull { it.temp } ?: 1.0F
 
                     val pointFs = mutableListOf<PointF>()
@@ -128,7 +138,7 @@ private fun ForecastContent(
                         val humidityText = "${item.humidity}%"
 
                         val pointF = PointF(
-                            size.width / visibleItemCount.float * index.float,
+                            spacing * index.float,
                             12.dp.toPx()
                         )
 
