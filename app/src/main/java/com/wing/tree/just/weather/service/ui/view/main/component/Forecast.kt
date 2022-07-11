@@ -5,6 +5,8 @@ import android.graphics.PointF
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,15 +47,23 @@ fun Forecast(
             uiState.forecast?.let { forecast ->
                 val group = forecast.list.groupBy { it.dayOfWeek }
 
-                Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+                Column(modifier = modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                ) {
                     group.values.forEachIndexed { index, list ->
-                        Spacer(modifier = modifier.height(8.dp))
-
                         if (list.isNotEmpty()) {
-                            ForecastContent(
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Surface(
                                 modifier = Modifier.fillMaxWidth(),
-                                list = list
-                            )
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                ForecastContent(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    list = list
+                                )
+                            }
                         }
                     }
                 }
@@ -105,7 +115,10 @@ private fun ForecastContent(
         }
     }
 
-    Box(modifier = modifier.onSizeChanged { size = it }) {
+    Surface(
+        modifier = modifier.onSizeChanged { size = it },
+        shape = RoundedCornerShape(8.dp)
+    ) {
         Row(
             Modifier
                 .height(192.dp)
@@ -121,8 +134,6 @@ private fun ForecastContent(
                 modifier = modifier.width(width.plus(horizontal.times(TWO))),
                 contentAlignment = Alignment.Center
             ) {
-
-
                 Canvas(
                     modifier = Modifier
                         .fillMaxWidth()
