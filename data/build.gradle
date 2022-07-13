@@ -36,6 +36,7 @@ dependencies {
     implementation project(':library')
 
     implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'com.google.android.gms:play-services-location:20.0.0'
     testImplementation 'junit:junit:4.13.2'
